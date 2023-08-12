@@ -1,6 +1,7 @@
 import { program } from 'commander'
 import z from 'zod'
-import { foo } from './foo'
+import { execute } from './execute'
+import { logger } from './logger'
 
 const argsSchema = z.object({
   prompt: z.string().optional(),
@@ -8,7 +9,7 @@ const argsSchema = z.object({
   separator: z.string().optional(),
   stdin: z.string().optional(),
 })
-type GptCliArgs = z.infer<typeof argsSchema>
+export type GptCliArgs = z.infer<typeof argsSchema>
 
 function main({ stdin }: { stdin?: string }) {
   program
@@ -16,22 +17,17 @@ function main({ stdin }: { stdin?: string }) {
     .option('-s, --separator <char>')
     .argument('<prompt>', 'prompt')
     .action((prompt, options) => {
-      console.log('hello world', options.first, prompt)
+      logger.debug('hello world', options.first, prompt)
       const args = argsSchema.parse({
         ...options,
         prompt,
         stdin,
       })
-      console.log(args)
+      logger.debug(args)
       execute(args)
     })
 
   program.parse()
-}
-
-function execute({ prompt }: GptCliArgs) {
-  console.log('prompt:', prompt)
-  foo()
 }
 
 if (process.stdin.isTTY) {

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { foo } from '../src/foo'
+import { foo } from '../src/execute'
 
 test('adds 1 + 2 to equal 3', () => {
   foo()
