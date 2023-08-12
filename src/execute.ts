@@ -2,8 +2,9 @@ import chalk from 'chalk'
 import { GptCliArgs } from '.'
 import { executeChatTask } from './tasks/executeChatTask'
 import { executeReplaceFileTask } from './tasks/executeReplaceFileTask'
+import { openFile } from './util'
 
-export async function execute({ prompt, ...options }: GptCliArgs) {
+export async function execute({ prompt, stdin, ...options }: GptCliArgs) {
   // TODO: help, version
 
   const apiKey = process.env.OPENAI_API_KEY // TODO: move to configuration file
@@ -17,23 +18,25 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
     process.exit(1)
   }
 
+  const filePath = options.file
+  const fileBody = filePath !== undefined ? await openFile(filePath) : undefined
+
   //
   // タスクごとに分岐
   //
-  // ファイルの書き換え
-  if (options.replace !== undefined) {
-    await executeReplaceFileTask({ apiKey, prompt, filePath: options.replace, write: true })
-    process.exit(0)
-  }
-
-  if (options.file !== undefined) {
-    const reply = await executeReplaceFileTask({ apiKey, prompt, filePath: options.file, write: false })
-    console.log(reply)
+  // ファイルの書き換えタスク
+  if (options.replace) {
+    if (filePath === undefined || fileBody === undefined) {
+      console.log(chalk.red('file is required'))
+      process.exit(1)
+    }
+    await executeReplaceFileTask({ apiKey, prompt, fileBody, filePath, write: true })
     process.exit(0)
   }
 
   // 単純にプロンプトを返す
-  const reply = executeChatTask({ apiKey, prompt })
+  // ファイル、標準入力があればそれも指定する
+  const reply = await executeChatTask({ apiKey, prompt, extraContent: fileBody ?? stdin })
   console.log(reply)
   process.exit(0)
 }

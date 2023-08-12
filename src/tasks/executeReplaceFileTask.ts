@@ -6,15 +6,16 @@ import { createChatCompletion } from '../createChatCompletion'
 export async function executeReplaceFileTask({
   apiKey,
   prompt,
+  fileBody,
   filePath,
   write,
 }: {
   apiKey: string
   prompt: string
+  fileBody: string
   filePath: string
   write?: boolean
 }) {
-  const fileBody = await openFile(filePath)
   const res = await createChatCompletion(apiKey, [
     {
       // TODO: customize。英語日本語。プログラミング言語の指定。
@@ -41,19 +42,6 @@ export async function executeReplaceFileTask({
     await overwriteFile(filePath, reply)
   }
   return reply
-}
-
-async function openFile(filePath: string) {
-  try {
-    const fileBody = await readFile(filePath) // TODO: 相対パス、絶対パス、OSごとのを考慮して、これでいいんだろうか…？
-    return fileBody
-  } catch (e) {
-    if (e instanceof Error) {
-      console.log(chalk.red(`failed to open file`))
-      console.log(chalk.red(e.message))
-    }
-    process.exit(1)
-  }
 }
 
 async function overwriteFile(filePath: string, fileBody: string) {
