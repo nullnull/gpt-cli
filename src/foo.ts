@@ -1,3 +1,5 @@
+import chalk from 'chalk'
+
 export function foo() {
-  console.log('foo');
+  console.log(chalk.red('foo'));
 }
