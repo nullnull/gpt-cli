@@ -1,6 +1,12 @@
 {
-  "name": "gpt-cli",
-  "version": "0.0.1",
+  "name": "@nullnull/gpt-cli",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "gpt": "./bin/gpt.js"
+  },
+  "version": "0.0.2",
   "main": "index.js",
   "author": "Katsuma Narisawa",
   "license": "MIT",
