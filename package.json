@@ -4,9 +4,11 @@
     "access": "public"
   },
   "bin": {
-    "gpt": "./bin/gpt.js"
+    "gpt": "./bin/gpt.js",
+    "gpt-cli": "./bin/gpt.js",
+    "ai": "./bin/gpt.js"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "author": "Katsuma Narisawa",
   "license": "MIT",
