@@ -2,17 +2,15 @@ import { Configuration, CreateChatCompletionRequest, CreateChatCompletionRespons
 import { logger } from './logger'
 import { isDevelopmentMode } from './util'
 
-export async function createChatCompletion(
-  apiKey: string,
-  messages: Array<{ content: string; role: 'user' | 'assistant' }>,
-) {
+type Message = { content: string; role: 'user' | 'assistant' }
+export async function createChatCompletion(apiKey: string, messages: Array<Message>) {
   const configuration = new Configuration({
     apiKey,
   })
   const openai = new OpenAIApi(configuration)
 
   if (isDevelopmentMode()) {
-    return generateMockedResponse(messages[0].content)
+    return generateMockedResponse(messages)
   }
 
   const chatCompletion = await openai.createChatCompletion({
@@ -21,12 +19,11 @@ export async function createChatCompletion(
   })
 
   logger.info(chatCompletion.data)
-  console.log(JSON.stringify(chatCompletion.data))
   return chatCompletion.data
 }
 
 const MOCKED_RESPONSE_CONTENT_PREFIX = `[MOCKED] Your prompt is: `
-function generateMockedResponse(prompt: string): CreateChatCompletionResponse {
+function generateMockedResponse(messages: Message[]): CreateChatCompletionResponse {
   return {
     id: 'chatcmpl-7meZCVU3RKM3ctNSvigAPCVJYx8G7',
     object: 'chat.completion',
@@ -37,7 +34,7 @@ function generateMockedResponse(prompt: string): CreateChatCompletionResponse {
         index: 0,
         message: {
           role: 'assistant',
-          content: [MOCKED_RESPONSE_CONTENT_PREFIX, prompt].join(': '),
+          content: [MOCKED_RESPONSE_CONTENT_PREFIX, messages.map((x) => x.content).join('\n')].join(': '),
         },
         finish_reason: 'stop',
       },

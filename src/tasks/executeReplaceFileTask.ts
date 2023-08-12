@@ -1,0 +1,69 @@
+import chalk from 'chalk'
+import { readFile, writeFile } from 'fs/promises'
+
+import { createChatCompletion } from '../createChatCompletion'
+
+export async function executeReplaceFileTask({
+  apiKey,
+  prompt,
+  filePath,
+  write,
+}: {
+  apiKey: string
+  prompt: string
+  filePath: string
+  write?: boolean
+}) {
+  const fileBody = await openFile(filePath)
+  const res = await createChatCompletion(apiKey, [
+    {
+      // TODO: customize。英語日本語。プログラミング言語の指定。
+      // mustacheでいきたい
+      content: `テキストファイルの中身をこれから行う指示に合わせて書き換えてください。
+出力は書き換えたファイルの中身のみです。それ以外の文字列を含めないでください。
+ファイル名：${filePath}
+指示：${prompt}
+ファイルの中身は次に送ります。
+`,
+      role: 'user',
+    },
+    {
+      content: fileBody.toString(),
+      role: 'user',
+    },
+  ])
+  const reply = res.choices[0]?.message?.content
+  if (reply === undefined) {
+    console.log(chalk.red('no reply'))
+    process.exit(1)
+  }
+  if (write) {
+    await overwriteFile(filePath, reply)
+  }
+  return reply
+}
+
+async function openFile(filePath: string) {
+  try {
+    const fileBody = await readFile(filePath) // TODO: 相対パス、絶対パス、OSごとのを考慮して、これでいいんだろうか…？
+    return fileBody
+  } catch (e) {
+    if (e instanceof Error) {
+      console.log(chalk.red(`failed to open file`))
+      console.log(chalk.red(e.message))
+    }
+    process.exit(1)
+  }
+}
+
+async function overwriteFile(filePath: string, fileBody: string) {
+  try {
+    await writeFile(filePath, fileBody)
+  } catch (e) {
+    if (e instanceof Error) {
+      console.log(chalk.red(`failed to overwrite file`))
+      console.log(chalk.red(e.message))
+    }
+    process.exit(1)
+  }
+}
