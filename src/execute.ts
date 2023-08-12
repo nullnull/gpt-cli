@@ -1,8 +1,10 @@
 import chalk from 'chalk'
 import { GptCliArgs } from '.'
-import { createChatCompletion } from './createChatCompletion'
+import { executeChatTask } from './tasks/executeChatTask'
 
 export async function execute({ prompt }: GptCliArgs) {
+  // TODO: help, version
+
   const apiKey = process.env.OPENAI_API_KEY // TODO: move to configuration file
   if (apiKey === undefined) {
     console.log(chalk.red('OPENAI_API_KEY is required'))
@@ -14,18 +16,12 @@ export async function execute({ prompt }: GptCliArgs) {
     process.exit(1)
   }
 
+  //
+  // タスクごとに分岐
+  //
+
   // 単純にプロンプトを返す
-  const res = await createChatCompletion(apiKey, [
-    {
-      content: prompt,
-      role: 'user',
-    },
-  ])
-  const reply = res.choices[0]?.message?.content
-  if (reply === undefined) {
-    console.log(chalk.red('no reply'))
-    process.exit(1)
-  }
+  const reply = executeChatTask({ apiKey, prompt })
   console.log(reply)
   process.exit(0)
 }
