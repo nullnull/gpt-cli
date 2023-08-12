@@ -3,6 +3,7 @@ import { GptCliArgs } from '.'
 import { executeChatTask } from './tasks/executeChatTask'
 import { executeReplaceFileTask } from './tasks/executeReplaceFileTask'
 import { openFile } from './util'
+import { executeCommandTask } from './tasks/executeCommandTask'
 
 export async function execute({ prompt, stdin, ...options }: GptCliArgs) {
   // TODO: help, version
@@ -31,6 +32,12 @@ export async function execute({ prompt, stdin, ...options }: GptCliArgs) {
       process.exit(1)
     }
     await executeReplaceFileTask({ apiKey, prompt, fileBody, filePath, write: true })
+    process.exit(0)
+  }
+
+  // コマンドの実行
+  if (options.command) {
+    await executeCommandTask({ apiKey, prompt, force: options.force, minimum: options.minimum })
     process.exit(0)
   }
 

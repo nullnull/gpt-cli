@@ -5,15 +5,19 @@ import { logger } from './logger'
 
 const argsSchema = z.object({
   prompt: z.string().optional(),
-  minimum: z.boolean().optional(),
-  replace: z.boolean().optional(),
   file: z.string().optional(),
   stdin: z.string().optional(),
+  replace: z.boolean().optional(),
+  minimum: z.boolean().optional(), // gptの返信を最低限のものにし、また表示されるログも最低限にする
+  force: z.boolean().optional(),
+  command: z.boolean().optional(),
 })
 export type GptCliArgs = z.infer<typeof argsSchema>
 
 function main({ stdin }: { stdin?: string }) {
   program
+    .option('-c, --force')
+    .option('--command')
     .option('-m, --minimum')
     .option('-r, --replace')
     .option('-f, --file <char>')

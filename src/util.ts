@@ -1,5 +1,7 @@
 import chalk from 'chalk'
-import { readFile, writeFile } from 'fs/promises'
+import { readFile } from 'fs/promises'
+import childProcess from 'child_process'
+import { logger } from './logger'
 
 export function isDevelopmentMode() {
   return process.env.GPT_CLI_DEBUG_MODE === 'true'
@@ -16,4 +18,19 @@ export async function openFile(filePath: string) {
     }
     process.exit(1)
   }
+}
+
+export async function execCommand(cmd: string) {
+  return new Promise((resolve) => {
+    childProcess.exec(cmd, (error, stdout, stderr) => {
+      console.log(stdout)
+      if (error !== null) {
+        console.log(chalk.red(error))
+      }
+      if (stderr !== null && stderr !== '') {
+        console.log(chalk.red(stderr))
+      }
+      resolve(stdout)
+    })
+  })
 }
