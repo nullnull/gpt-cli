@@ -1,15 +1,16 @@
-import { foo } from './foo'
 import { program } from 'commander'
 import z from 'zod'
+import { foo } from './foo'
 
 const argsSchema = z.object({
   prompt: z.string().optional(),
   first: z.boolean().optional(),
   separator: z.string().optional(),
+  stdin: z.string().optional(),
 })
 type GptCliArgs = z.infer<typeof argsSchema>
 
-function main() {
+function main({ stdin }: { stdin?: string }) {
   program
     .option('--first')
     .option('-s, --separator <char>')
@@ -19,6 +20,7 @@ function main() {
       const args = argsSchema.parse({
         ...options,
         prompt,
+        stdin,
       })
       console.log(args)
       execute(args)
@@ -32,4 +34,14 @@ function execute({ prompt }: GptCliArgs) {
   foo()
 }
 
-main()
+if (process.stdin.isTTY) {
+  main({ stdin: undefined })
+} else {
+  let stdin = ''
+  process.stdin.on('data', function (chunk) {
+    stdin += chunk
+  })
+  process.stdin.on('end', function () {
+    main({ stdin })
+  })
+}
