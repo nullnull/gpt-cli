@@ -6,21 +6,24 @@ export async function executeChatTask({
   prompt,
   extraContent,
   filePath,
+  minimum,
 }: {
   apiKey: string
   prompt: string
   extraContent?: string
   filePath?: string
+  minimum?: boolean
 }) {
+  const minimumizeText = minimum ? `指示に含まれる返答以外は絶対にしないでください。` : ``
   const messages =
     extraContent !== undefined
       ? [
           {
             content:
               filePath === undefined
-                ? `次に送るテキスト文字列について、以下の指示を実行してください。
+                ? `次に送るテキスト文字列について、以下の指示を実行してください。${minimumizeText}
 指示：${prompt}`
-                : `次に送るファイルの中身について、以下の指示を実行してください。
+                : `次に送るファイルの中身について、以下の指示を実行してください。${minimumizeText}
 ファイル名：${filePath}
 指示：${prompt}`,
             role: 'user' as const,
