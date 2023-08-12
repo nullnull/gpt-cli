@@ -8,6 +8,10 @@
     "gpt-cli": "./bin/gpt.js",
     "ai": "./bin/gpt.js"
   },
+  "files": [
+    "dist",
+    "bin"
+  ],
   "version": "0.0.3",
   "main": "index.js",
   "author": "Katsuma Narisawa",
