@@ -5,8 +5,12 @@ import { executeReplaceFileTask } from './tasks/executeReplaceFileTask.js'
 import { openFile } from './util.js'
 import { executeCommandTask } from './tasks/executeCommandTask.js'
 import { loadConfig } from './config/loadConfig.js'
+import { logger } from './logger.js'
 
 export async function execute({ prompt, ...options }: GptCliArgs) {
+  if (options.verbose) {
+    logger.settings.minLevel = 3
+  }
   // TODO: help, version
 
   const config = await loadConfig()

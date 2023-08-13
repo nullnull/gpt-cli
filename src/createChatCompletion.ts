@@ -17,12 +17,14 @@ export async function createChatCompletion(apiKey: string, config: GptCliConfig,
   }
 
   try {
-    const chatCompletion = await openai.createChatCompletion({
+    const payload = {
       model: config.model ?? 'gpt-3.5-turbo',
       messages,
-    })
+    }
+    logger.info(`payload`, payload)
+    const chatCompletion = await openai.createChatCompletion(payload)
 
-    logger.info(chatCompletion.data)
+    logger.info(`response`, chatCompletion.data)
     return chatCompletion.data
   } catch (e) {
     if ((e as any).isAxiosError) {

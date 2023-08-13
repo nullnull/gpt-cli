@@ -3,6 +3,7 @@ import z from 'zod'
 import { execute } from './execute.js'
 import { logger } from './logger.js'
 import { registerApiKey } from './config/updateConfig.js'
+import { executeConfigTask } from './tasks/executeConfigTask.js'
 
 const chatCommandArgs = z.object({
   type: z.literal(`chat`),
@@ -11,6 +12,7 @@ const chatCommandArgs = z.object({
   stdin: z.string().optional(),
   write: z.boolean().optional(),
   minimal: z.boolean().optional(),
+  verbose: z.boolean().optional(),
 })
 
 const commandCommandArgs = z.object({
@@ -18,6 +20,7 @@ const commandCommandArgs = z.object({
   prompt: z.string().optional(),
   interaction: z.boolean(),
   execute: z.boolean().optional(),
+  verbose: z.boolean().optional(),
 })
 const commandsArgs = z.union([chatCommandArgs, commandCommandArgs])
 export type GptCliArgs = z.infer<typeof commandsArgs>
@@ -31,12 +34,21 @@ function main({ stdin }: { stdin?: string }) {
     .action(async (apiKey) => {
       await registerApiKey(apiKey)
     })
+
+  program
+    .command(`config`)
+    .description(`set config`)
+    .action(async () => {
+      await executeConfigTask()
+    })
+
   // commandコマンド
   program
     .command(`command`)
     .description(`execute command`)
     .option('--no-interaction', 'description for no-interaction', true)
     .option('-e, --execute')
+    .option('--verbose')
     .argument('<prompt>', 'prompt')
     .action((prompt, options) => {
       logger.debug(options, prompt)
@@ -54,6 +66,7 @@ function main({ stdin }: { stdin?: string }) {
     .option('-w, --write')
     .option('-m, --minimal')
     .option('-f, --file <char>')
+    .option('--verbose')
     .argument('<prompt>', 'prompt')
     .action((prompt, options) => {
       // logger.debug(options, prompt)
