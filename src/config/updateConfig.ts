@@ -11,14 +11,20 @@ export async function registerApiKey(apiKey: string) {
     process.exit(1)
   }
 
+  await updateConfig({
+    openaiApiKey: apiKey,
+  })
+  console.log(`Successfully registered✨ You can use gpt-cli now!`)
+  console.log(`API KEY: ${apiKey}`)
+}
+
+export async function updateConfig(config: Partial<GptCliConfig>) {
   const currentConfig = await loadConfig()
   const newConfig: GptCliConfig = {
     ...currentConfig,
-    openaiApiKey: apiKey,
+    ...config,
   }
   await writeConfig(newConfig)
-  console.log(`Successfully registered✨ You can use gpt-cli now!`)
-  console.log(`API KEY: ${apiKey}`)
 }
 
 async function writeConfig(config: GptCliConfig) {

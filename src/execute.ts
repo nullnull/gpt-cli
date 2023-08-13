@@ -23,7 +23,7 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
 
   // コマンドの実行
   if (options.type === 'command') {
-    await executeCommandTask({ apiKey, prompt, execute: options.execute, interaction: options.interaction })
+    await executeCommandTask({ apiKey, config, prompt, execute: options.execute, interaction: options.interaction })
     process.exit(0)
   }
 
@@ -39,7 +39,7 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
       console.log(chalk.red('file is required'))
       process.exit(1)
     }
-    await executeReplaceFileTask({ apiKey, prompt, fileBody, filePath, write: true })
+    await executeReplaceFileTask({ apiKey, config, prompt, fileBody, filePath, write: true })
     process.exit(0)
   }
 
@@ -47,6 +47,7 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
   // ファイル、標準入力があればそれも指定する
   const reply = await executeChatTask({
     apiKey,
+    config,
     prompt,
     extraContent: fileBody ?? options.stdin,
     minimal: options.minimal,

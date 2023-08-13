@@ -2,21 +2,24 @@ import chalk from 'chalk'
 import { readFile, writeFile } from 'fs/promises'
 
 import { createChatCompletion } from '../createChatCompletion.js'
+import { GptCliConfig } from '../config/loadConfig.js'
 
 export async function executeReplaceFileTask({
   apiKey,
+  config,
   prompt,
   fileBody,
   filePath,
   write,
 }: {
   apiKey: string
+  config: GptCliConfig
   prompt: string
   fileBody: string
   filePath: string
   write?: boolean
 }) {
-  const res = await createChatCompletion(apiKey, [
+  const res = await createChatCompletion(apiKey, config, [
     {
       // TODO: customize。英語日本語。プログラミング言語の指定。
       // mustacheでいきたい

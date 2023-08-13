@@ -2,9 +2,10 @@ import { Configuration, CreateChatCompletionRequest, CreateChatCompletionRespons
 import { logger } from './logger.js'
 import { isDevelopmentMode } from './util.js'
 import chalk from 'chalk'
+import { GptCliConfig } from './config/loadConfig.js'
 
 type Message = { content: string; role: 'user' | 'assistant' }
-export async function createChatCompletion(apiKey: string, messages: Array<Message>) {
+export async function createChatCompletion(apiKey: string, config: GptCliConfig, messages: Array<Message>) {
   logger.debug(messages)
   const configuration = new Configuration({
     apiKey,
@@ -17,7 +18,7 @@ export async function createChatCompletion(apiKey: string, messages: Array<Messa
 
   try {
     const chatCompletion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: config.model ?? 'gpt-3.5-turbo',
       messages,
     })
 

@@ -6,20 +6,24 @@ import { logger } from '../logger.js'
 import { execCommand } from '../util.js'
 import { z } from 'zod'
 import clipboard from 'clipboardy'
+import { GptCliConfig } from '../config/loadConfig.js'
+import { config } from 'process'
 
 export async function executeCommandTask({
   apiKey,
+  config,
   prompt,
   execute,
   interaction,
 }: {
   apiKey: string
+  config: GptCliConfig
   prompt: string
   execute?: boolean
   interaction: boolean
 }) {
   if (!interaction || execute) {
-    await executeCommandTaskWithNoInteraction({ apiKey, prompt, execute })
+    await executeCommandTaskWithNoInteraction({ apiKey, config, prompt, execute })
     return
   }
 
@@ -52,15 +56,23 @@ OS: ${process.platform}
       role: 'user' as const,
     },
   ]
-  await executeCommandTaskInteractive({ apiKey, messages })
+  await executeCommandTaskInteractive({ apiKey, config, messages })
 }
 
 type Message = {
   content: string
   role: 'user' | 'assistant'
 }
-async function executeCommandTaskInteractive({ apiKey, messages }: { apiKey: string; messages: Message[] }) {
-  const res = await createChatCompletion(apiKey, messages)
+async function executeCommandTaskInteractive({
+  apiKey,
+  config,
+  messages,
+}: {
+  apiKey: string
+  config: GptCliConfig
+  messages: Message[]
+}) {
+  const res = await createChatCompletion(apiKey, config, messages)
   logger.info(res)
   const reply = res.choices[0]?.message
   if (reply === undefined || reply.content === undefined) {
@@ -164,6 +176,7 @@ ${parsed.explanation}
   const parsedPrompt = z.string().parse(additionalPrompt)
   await executeCommandTaskInteractive({
     apiKey,
+    config,
     messages: [
       ...messages,
       {
@@ -188,14 +201,16 @@ function parseReply(reply: string) {
 
 async function executeCommandTaskWithNoInteraction({
   apiKey,
+  config,
   prompt,
   execute,
 }: {
   apiKey: string
+  config: GptCliConfig
   prompt: string
   execute?: boolean
 }) {
-  const res = await createChatCompletion(apiKey, [
+  const res = await createChatCompletion(apiKey, config, [
     {
       content: `これから行う指示に合わせて、コマンドを生成してください。
 コマンド以外を返事に含めないでください。
