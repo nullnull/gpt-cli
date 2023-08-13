@@ -6,26 +6,33 @@ import { logger } from '../logger.js'
 import { execCommand } from '../util.js'
 import { z } from 'zod'
 import clipboard from 'clipboardy'
+import { GptCliConfig } from '../config/loadConfig.js'
+import { config } from 'process'
 
 export async function executeCommandTask({
   apiKey,
+  config,
   prompt,
   execute,
   interaction,
+  explanation,
 }: {
   apiKey: string
+  config: GptCliConfig
   prompt: string
   execute?: boolean
   interaction: boolean
+  explanation: boolean
 }) {
   if (!interaction || execute) {
-    await executeCommandTaskWithNoInteraction({ apiKey, prompt, execute })
+    await executeCommandTaskWithNoInteraction({ apiKey, config, prompt, execute })
     return
   }
 
   const messages = [
-    {
-      content: `これから行う指示に合わせて、コマンド生成してください。また、コマンドの解説文を生成してください。
+    explanation
+      ? {
+          content: `これから行う指示に合わせて、コマンド生成してください。また、コマンドの解説文を生成してください。
 
 # 出力形式
 1行目にコマンドを、改行を2つ以上あけてから解説文を記述してください。
@@ -45,22 +52,49 @@ findコマンドは、UNIXおよびLinuxシステムにおいて、指定した�
 OS: ${process.platform}
 
 次に指示を送ります。`,
-      role: 'user' as const,
-    },
+          role: 'user' as const,
+        }
+      : {
+          content: `これから行う指示に合わせて、コマンド生成してください。
+コマンドのみを出力してください。余計な解説や文章は絶対に含めないでください。
+今後の全ての指示において、絶対にこの形式で返事をしてください。例外はありません。
+
+# 例
+## 指示の例
+jsファイルを一覧表示してください。
+## 出力例
+find . -name *.js
+
+# 実行環境
+OS: ${process.platform}
+
+次に指示を送ります。`,
+          role: 'user' as const,
+        },
     {
       content: prompt,
       role: 'user' as const,
     },
   ]
-  await executeCommandTaskInteractive({ apiKey, messages })
+  await executeCommandTaskInteractive({ apiKey, config, messages, explanation })
 }
 
 type Message = {
   content: string
   role: 'user' | 'assistant'
 }
-async function executeCommandTaskInteractive({ apiKey, messages }: { apiKey: string; messages: Message[] }) {
-  const res = await createChatCompletion(apiKey, messages)
+async function executeCommandTaskInteractive({
+  apiKey,
+  config,
+  messages,
+  explanation,
+}: {
+  apiKey: string
+  config: GptCliConfig
+  messages: Message[]
+  explanation: boolean
+}) {
+  const res = await createChatCompletion(apiKey, config, messages)
   logger.info(res)
   const reply = res.choices[0]?.message
   if (reply === undefined || reply.content === undefined) {
@@ -68,12 +102,16 @@ async function executeCommandTaskInteractive({ apiKey, messages }: { apiKey: str
     process.exit(1)
   }
   const parsed = parseReply(reply.content)
-  console.log(`${chalk.blueBright(`-----Command-----`)}
+  console.log(
+    explanation
+      ? `${chalk.blueBright(`-----Command-----`)}
 ${parsed.command}
 
 ${chalk.blueBright(`----Explanation----`)}
 ${parsed.explanation}
-  `)
+  `
+      : parsed.command,
+  )
 
   const { choice } = await inquirer.prompt({
     type: 'list',
@@ -156,7 +194,7 @@ ${parsed.explanation}
   const { additionalPrompt } = await inquirer.prompt({
     type: 'input',
     name: 'additionalPrompt',
-    message: `🤖 Please input further instructions`,
+    message: `🤖 Any tweaks?`,
   })
   if (['q', 'quit', ''].includes(additionalPrompt)) {
     return
@@ -164,6 +202,8 @@ ${parsed.explanation}
   const parsedPrompt = z.string().parse(additionalPrompt)
   await executeCommandTaskInteractive({
     apiKey,
+    config,
+    explanation,
     messages: [
       ...messages,
       {
@@ -188,14 +228,16 @@ function parseReply(reply: string) {
 
 async function executeCommandTaskWithNoInteraction({
   apiKey,
+  config,
   prompt,
   execute,
 }: {
   apiKey: string
+  config: GptCliConfig
   prompt: string
   execute?: boolean
 }) {
-  const res = await createChatCompletion(apiKey, [
+  const res = await createChatCompletion(apiKey, config, [
     {
       content: `これから行う指示に合わせて、コマンドを生成してください。
 コマンド以外を返事に含めないでください。

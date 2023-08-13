@@ -1,9 +1,12 @@
 import { Configuration, CreateChatCompletionRequest, CreateChatCompletionResponse, OpenAIApi } from 'openai'
 import { logger } from './logger.js'
 import { isDevelopmentMode } from './util.js'
+import chalk from 'chalk'
+import { Spinner } from 'cli-spinner'
+import { GptCliConfig } from './config/loadConfig.js'
 
 type Message = { content: string; role: 'user' | 'assistant' }
-export async function createChatCompletion(apiKey: string, messages: Array<Message>) {
+export async function createChatCompletion(apiKey: string, config: GptCliConfig, messages: Array<Message>) {
   logger.debug(messages)
   const configuration = new Configuration({
     apiKey,
@@ -14,13 +17,33 @@ export async function createChatCompletion(apiKey: string, messages: Array<Messa
     return generateMockedResponse(messages)
   }
 
-  const chatCompletion = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    messages,
-  })
-
-  logger.info(chatCompletion.data)
-  return chatCompletion.data
+  try {
+    const payload = {
+      model: config.model ?? 'gpt-3.5-turbo',
+      messages,
+    }
+    logger.info(`payload`, payload)
+    const spinner = new Spinner(chalk.greenBright('%s '))
+    spinner.setSpinnerString(18)
+    spinner.start()
+    const chatCompletion = await openai.createChatCompletion(payload)
+    spinner.stop(true)
+    logger.info(`response`, chatCompletion.data)
+    return chatCompletion.data
+  } catch (e) {
+    if ((e as any).isAxiosError) {
+      const axiosError = e as any
+      const message = axiosError.response.data.error.message
+      if (message !== undefined) {
+        console.error(chalk.red(message))
+      } else {
+        console.error(axiosError.response.data)
+      }
+    } else if (e instanceof Error) {
+      console.log(chalk.red(e.message))
+    }
+    process.exit(1)
+  }
 }
 
 const MOCKED_RESPONSE_CONTENT_PREFIX = `[MOCKED] Your prompt is: `

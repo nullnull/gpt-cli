@@ -1,14 +1,17 @@
 import chalk from 'chalk'
 import { createChatCompletion } from '../createChatCompletion.js'
+import { GptCliConfig } from '../config/loadConfig.js'
 
 export async function executeChatTask({
   apiKey,
+  config,
   prompt,
   extraContent,
   filePath,
   minimal,
 }: {
   apiKey: string
+  config: GptCliConfig
   prompt: string
   extraContent?: string
   filePath?: string
@@ -39,7 +42,7 @@ export async function executeChatTask({
             role: 'user' as const,
           },
         ]
-  const res = await createChatCompletion(apiKey, messages)
+  const res = await createChatCompletion(apiKey, config, messages)
   const reply = res.choices[0]?.message?.content
   if (reply === undefined) {
     console.log(chalk.red('no reply'))
