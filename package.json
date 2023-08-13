@@ -27,7 +27,7 @@
   "author": "Katsuma Narisawa",
   "license": "MIT",
   "devDependencies": {
-    "@types/inquirer": "^8.0.0",
+    "@types/inquirer": "^9.0.0",
     "@types/node": "^20.4.10",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
@@ -37,10 +37,10 @@
     "vitest": "^0.34.1"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "clipboardy": "^3.0.0",
     "commander": "^11.0.0",
-    "inquirer": "^8.0.0",
+    "inquirer": "^9.0.0",
     "openai": "^3.3.0",
     "tslog": "^4.9.1",
     "zod": "^3.21.4"
