@@ -7,7 +7,6 @@ export type GptCliFixedPrompt = {
   replace: string
 }
 
-// TODO
 const englishPrompt: GptCliFixedPrompt = {
   chatWithStdin: `Please execute the following instruction for the next text string to be sent. 
 {{#minimal}}Stick strictly to the response required in the instruction. No extra explanations are needed.{{/minimal}}
