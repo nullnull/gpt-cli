@@ -22,16 +22,22 @@ const commandCommandArgs = z.object({
   explanation: z.boolean(),
   execute: z.boolean().optional(),
   verbose: z.boolean().optional(),
+  version: z.boolean().optional(),
 })
 const commandsArgs = z.union([chatCommandArgs, commandCommandArgs])
 export type GptCliArgs = z.infer<typeof commandsArgs>
 
 function main({ stdin }: { stdin?: string }) {
+  program.version('0.0.8')
+
   // register api key
   program
     .command(`auth`)
-    .description(`execute command`)
-    .argument('<key>', 'Your api key')
+    .description(`register openai api key`)
+    .argument(
+      '<key>',
+      'Your openai api key. You can get your own api key from https://platform.openai.com/account/api-keys',
+    )
     .action(async (apiKey) => {
       await registerApiKey(apiKey)
     })
@@ -46,11 +52,17 @@ function main({ stdin }: { stdin?: string }) {
   // commandコマンド
   program
     .command(`command`)
-    .description(`execute command`)
-    .option('--no-interaction', 'description for no-interaction', true)
-    .option('--no-explanation', 'description for no-explanation', true)
-    .option('-e, --execute')
-    .option('--verbose')
+    .description(
+      `get the command with natural language and execute it.
+
+Usage:
+
+  ai command "find .js files in current directory"`,
+    )
+    .option('--no-interaction', 'skip interaction', true)
+    .option('--no-explanation', 'hide explanation for commands. show command only.', true)
+    .option('-e, --execute', '[BE CAREFUL] execute command without confirmation')
+    .option('--verbose', 'show debug log')
     .argument('<prompt>', 'prompt')
     .action((prompt, options) => {
       logger.debug(options, prompt)
@@ -65,10 +77,19 @@ function main({ stdin }: { stdin?: string }) {
     })
 
   program
-    .option('-w, --write')
-    .option('-m, --minimal')
-    .option('-f, --file <char>')
-    .option('--verbose')
+    .description(
+      `chat with GPT, or edit file with GPT.
+
+Usage:
+    ai "Hello"
+    echo "Hello" | ai "translate following English to Japanese"
+    ai --file foo.ts --write "Remove all console.log()"
+    `,
+    )
+    .option('-w, --write', '[BE CAREFUL] edit file in-place')
+    .option('-m, --minimal', 'supress extra output of GPT')
+    .option('-f, --file <char>', 'file path to read')
+    .option('--verbose', 'show debug log')
     .argument('<prompt>', 'prompt')
     .action((prompt, options) => {
       // logger.debug(options, prompt)
