@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { readFile, writeFile } from 'fs/promises'
+import { readFile } from 'fs/promises'
 import yaml from 'js-yaml'
 import { z } from 'zod'
 import { configFilePath, createConfig } from './createConfig.js'
@@ -36,9 +36,4 @@ const readOrCreateConfigFile = async () => {
     createConfig()
     return ``
   }
-}
-
-export async function writeConfig(config: GptCliConfig) {
-  const text = yaml.dump(config)
-  await writeFile(configFilePath, text)
 }
