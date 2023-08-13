@@ -8,7 +8,7 @@ import { z } from 'zod'
 import clipboard from 'clipboardy'
 import { GptCliConfig } from '../config/loadConfig.js'
 import Mustache from 'mustache'
-import { fixedPrompt } from '../prompt/prompt.js'
+import { GptCliFixedPrompt, fixedPrompt } from '../prompt/prompt.js'
 
 export async function executeCommandTask({
   apiKey,
@@ -33,11 +33,11 @@ export async function executeCommandTask({
   const messages = [
     explanation
       ? {
-          content: Mustache.render(fixedPrompt.ja.commandWithExplanation, { platform: process.platform }),
+          content: Mustache.render(fixedPrompt[config.lang].commandWithExplanation, { platform: process.platform }),
           role: 'user' as const,
         }
       : {
-          content: Mustache.render(fixedPrompt.ja.commandWithoutExplanation, { platform: process.platform }),
+          content: Mustache.render(fixedPrompt[config.lang].commandWithoutExplanation, { platform: process.platform }),
           role: 'user' as const,
         },
     {
@@ -208,7 +208,7 @@ async function executeCommandTaskWithNoInteraction({
 }) {
   const res = await createChatCompletion(apiKey, config, [
     {
-      content: Mustache.render(fixedPrompt.ja.commandWithoutExplanation, { platform: process.platform }),
+      content: Mustache.render(fixedPrompt[config.lang].commandWithoutExplanation, { platform: process.platform }),
       role: 'user' as const,
     },
     {

@@ -8,6 +8,7 @@ import { logger } from '../logger.js'
 const configSchema = z.object({
   openaiApiKey: z.string().optional(),
   model: z.string().optional(),
+  lang: z.enum(['ja', 'en']).default('en'),
 })
 export type GptCliConfig = z.infer<typeof configSchema>
 

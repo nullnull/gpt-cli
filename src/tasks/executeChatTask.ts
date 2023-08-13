@@ -25,8 +25,8 @@ export async function executeChatTask({
           {
             content:
               filePath === undefined
-                ? Mustache.render(fixedPrompt.ja.chatWithStdin, { prompt, minimal })
-                : Mustache.render(fixedPrompt.ja.chatWithFile, { prompt, minimal, filePath }),
+                ? Mustache.render(fixedPrompt[config.lang].chatWithStdin, { prompt, minimal })
+                : Mustache.render(fixedPrompt[config.lang].chatWithFile, { prompt, minimal, filePath }),
             role: 'user' as const,
           },
           {

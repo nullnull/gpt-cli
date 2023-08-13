@@ -23,7 +23,7 @@ export async function executeReplaceFileTask({
 }) {
   const res = await createChatCompletion(apiKey, config, [
     {
-      content: Mustache.render(fixedPrompt.ja.replace, { filePath }),
+      content: Mustache.render(fixedPrompt[config.lang].replace, { filePath }),
       role: 'user',
     },
     {
