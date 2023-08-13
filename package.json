@@ -23,7 +23,7 @@
     "dist",
     "bin"
   ],
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "Katsuma Narisawa",
   "license": "MIT",
   "devDependencies": {
