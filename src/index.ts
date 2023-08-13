@@ -28,7 +28,7 @@ const commandsArgs = z.union([chatCommandArgs, commandCommandArgs])
 export type GptCliArgs = z.infer<typeof commandsArgs>
 
 function main({ stdin }: { stdin?: string }) {
-  program.version('0.0.8')
+  program.version('0.0.9')
 
   // register api key
   program
