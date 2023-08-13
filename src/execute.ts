@@ -16,12 +16,12 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
   const config = await loadConfig()
   const apiKey = config.openaiApiKey
   if (apiKey === undefined) {
-    console.log(chalk.red('OPENAI_API_KEY is required'))
+    console.log(chalk.red('[ERROR] OPENAI_API_KEY is required'))
     process.exit(1)
   }
 
   if (prompt === undefined) {
-    console.log(chalk.red('prompt is required'))
+    console.log(chalk.red('[ERROR] please input prompt'))
     process.exit(1)
   }
 
@@ -47,7 +47,7 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
   // ファイルの書き換えタスク
   if (options.write) {
     if (filePath === undefined || fileBody === undefined) {
-      console.log(chalk.red('file is required'))
+      console.log(chalk.red('[ERROR] --file option is required for --write option'))
       process.exit(1)
     }
     await executeReplaceFileTask({ apiKey, config, prompt, fileBody, filePath, write: true })
