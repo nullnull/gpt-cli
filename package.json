@@ -22,8 +22,7 @@
     "dist",
     "bin"
   ],
-  "version": "0.0.5",
-  "main": "index.js",
+  "version": "0.0.6",
   "author": "Katsuma Narisawa",
   "license": "MIT",
   "devDependencies": {
