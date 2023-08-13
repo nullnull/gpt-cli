@@ -15,7 +15,7 @@ export type GptCliConfig = z.infer<typeof configSchema>
 export async function loadConfig() {
   const raw = await readOrCreateConfigFile()
   logger.debug(`raw`, raw)
-  const config = yaml.load(raw)
+  const config = yaml.load(raw) ?? {}
   logger.debug(`config`, config)
   const validated = configSchema.safeParse(config)
   if (validated.success) {
