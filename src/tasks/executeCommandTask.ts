@@ -168,7 +168,7 @@ ${parsed.explanation}
   const { additionalPrompt } = await inquirer.prompt({
     type: 'input',
     name: 'additionalPrompt',
-    message: `🤖 Please input further instructions`,
+    message: `🤖 Any tweaks?`,
   })
   if (['q', 'quit', ''].includes(additionalPrompt)) {
     return
