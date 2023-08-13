@@ -25,8 +25,27 @@ export async function executeConfigTask() {
   })
   logger.debug({ model })
 
+  const { lang } = await inquirer.prompt({
+    type: 'list',
+    name: 'lang',
+    default: config.lang,
+    message: `🤖 Choose language for prompt`,
+    choices: [
+      {
+        name: 'en',
+        value: 'en',
+      },
+      {
+        name: 'ja',
+        value: 'ja',
+      },
+    ],
+  })
+  logger.debug({ lang })
+
   await updateConfig({
     model,
+    lang,
   })
   console.log(`Updated config`)
 }
