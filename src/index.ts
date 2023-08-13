@@ -14,8 +14,8 @@ const chatCommandArgs = z.object({
 const commandCommandArgs = z.object({
   type: z.literal(`command`),
   prompt: z.string().optional(),
-  minimum: z.boolean().optional(), // gptの返信を最低限のものにし、また表示されるログも最低限にする
-  force: z.boolean().optional(),
+  interaction: z.boolean(),
+  execute: z.boolean().optional(),
 })
 const commandsArgs = z.union([chatCommandArgs, commandCommandArgs])
 export type GptCliArgs = z.infer<typeof commandsArgs>
@@ -25,8 +25,9 @@ function main({ stdin }: { stdin?: string }) {
   program
     .command(`command`)
     .description(`execute command`)
-    .option('-m, --minimum')
-    .option('-f, --force')
+    .option('--no-interaction', 'description for no-interaction', true)
+    .option('-e, --execute')
+    .argument('<prompt>', 'prompt')
     .action((prompt, options) => {
       logger.debug(options, prompt)
       const args = commandCommandArgs.parse({
@@ -44,7 +45,7 @@ function main({ stdin }: { stdin?: string }) {
     .option('-f, --file <char>')
     .argument('<prompt>', 'prompt')
     .action((prompt, options) => {
-      logger.debug(options, prompt)
+      // logger.debug(options, prompt)
       const args = chatCommandArgs.parse({
         ...options,
         prompt,

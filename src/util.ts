@@ -1,7 +1,6 @@
 import chalk from 'chalk'
 import { readFile } from 'fs/promises'
 import childProcess from 'child_process'
-import { logger } from './logger'
 
 export function isDevelopmentMode() {
   return process.env.GPT_CLI_DEBUG_MODE === 'true'

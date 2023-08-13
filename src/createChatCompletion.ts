@@ -4,6 +4,7 @@ import { isDevelopmentMode } from './util'
 
 type Message = { content: string; role: 'user' | 'assistant' }
 export async function createChatCompletion(apiKey: string, messages: Array<Message>) {
+  logger.debug(messages)
   const configuration = new Configuration({
     apiKey,
   })
@@ -24,6 +25,14 @@ export async function createChatCompletion(apiKey: string, messages: Array<Messa
 
 const MOCKED_RESPONSE_CONTENT_PREFIX = `[MOCKED] Your prompt is: `
 function generateMockedResponse(messages: Message[]): CreateChatCompletionResponse {
+  const content = messages[0].content.includes(`JSON`)
+    ? JSON.stringify({
+        command: 'find src -name *.ts',
+        explanation: [MOCKED_RESPONSE_CONTENT_PREFIX, `this is explanation`].join(': '),
+      })
+    : messages[0].content.includes(`コマンドを生成`)
+    ? 'find src -name *.ts'
+    : [MOCKED_RESPONSE_CONTENT_PREFIX, messages.map((x) => x.content).join('\n')].join(': ')
   return {
     id: 'chatcmpl-7meZCVU3RKM3ctNSvigAPCVJYx8G7',
     object: 'chat.completion',
@@ -34,7 +43,7 @@ function generateMockedResponse(messages: Message[]): CreateChatCompletionRespon
         index: 0,
         message: {
           role: 'assistant',
-          content: [MOCKED_RESPONSE_CONTENT_PREFIX, messages.map((x) => x.content).join('\n')].join(': '),
+          content,
         },
         finish_reason: 'stop',
       },
