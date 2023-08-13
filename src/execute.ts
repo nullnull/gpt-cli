@@ -27,7 +27,14 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
 
   // コマンドの実行
   if (options.type === 'command') {
-    await executeCommandTask({ apiKey, config, prompt, execute: options.execute, interaction: options.interaction })
+    await executeCommandTask({
+      apiKey,
+      config,
+      prompt,
+      execute: options.execute,
+      interaction: options.interaction,
+      explanation: options.explanation,
+    })
     process.exit(0)
   }
 

@@ -19,6 +19,7 @@ const commandCommandArgs = z.object({
   type: z.literal(`command`),
   prompt: z.string().optional(),
   interaction: z.boolean(),
+  explanation: z.boolean(),
   execute: z.boolean().optional(),
   verbose: z.boolean().optional(),
 })
@@ -47,6 +48,7 @@ function main({ stdin }: { stdin?: string }) {
     .command(`command`)
     .description(`execute command`)
     .option('--no-interaction', 'description for no-interaction', true)
+    .option('--no-explanation', 'description for no-explanation', true)
     .option('-e, --execute')
     .option('--verbose')
     .argument('<prompt>', 'prompt')
