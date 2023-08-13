@@ -2,6 +2,7 @@ import { program } from 'commander'
 import z from 'zod'
 import { execute } from './execute.js'
 import { logger } from './logger.js'
+import { registerApiKey } from './registerApiKey.js'
 
 const chatCommandArgs = z.object({
   type: z.literal(`chat`),
@@ -22,6 +23,14 @@ const commandsArgs = z.union([chatCommandArgs, commandCommandArgs])
 export type GptCliArgs = z.infer<typeof commandsArgs>
 
 function main({ stdin }: { stdin?: string }) {
+  // register api key
+  program
+    .command(`auth`)
+    .description(`execute command`)
+    .argument('<key>', 'Your api key')
+    .action(async (apiKey) => {
+      await registerApiKey(apiKey)
+    })
   // commandコマンド
   program
     .command(`command`)

@@ -8,6 +8,7 @@
     "access": "public"
   },
   "scripts": {
+    "postinstall": "node scripts/createConfig.js",
     "dev": "ts-node src/index.ts",
     "build": "tsc",
     "watch": "tsc --watch",
@@ -36,10 +37,12 @@
     "vitest": "^0.34.1"
   },
   "dependencies": {
+    "@types/js-yaml": "^4.0.5",
     "chalk": "^5.0.0",
     "clipboardy": "^3.0.0",
     "commander": "^11.0.0",
     "inquirer": "^9.0.0",
+    "js-yaml": "^4.1.0",
     "openai": "^3.3.0",
     "tslog": "^4.9.1",
     "zod": "^3.21.4"
