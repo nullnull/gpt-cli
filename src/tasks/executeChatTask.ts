@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { createChatCompletion } from '../createChatCompletion'
+import { createChatCompletion } from '../createChatCompletion.js'
 
 export async function executeChatTask({
   apiKey,

@@ -1,6 +1,6 @@
 import { Configuration, CreateChatCompletionRequest, CreateChatCompletionResponse, OpenAIApi } from 'openai'
-import { logger } from './logger'
-import { isDevelopmentMode } from './util'
+import { logger } from './logger.js'
+import { isDevelopmentMode } from './util.js'
 
 type Message = { content: string; role: 'user' | 'assistant' }
 export async function createChatCompletion(apiKey: string, messages: Array<Message>) {

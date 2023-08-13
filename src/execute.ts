@@ -1,9 +1,9 @@
 import chalk from 'chalk'
-import { GptCliArgs } from '.'
-import { executeChatTask } from './tasks/executeChatTask'
-import { executeReplaceFileTask } from './tasks/executeReplaceFileTask'
-import { openFile } from './util'
-import { executeCommandTask } from './tasks/executeCommandTask'
+import { GptCliArgs } from './index.js'
+import { executeChatTask } from './tasks/executeChatTask.js'
+import { executeReplaceFileTask } from './tasks/executeReplaceFileTask.js'
+import { openFile } from './util.js'
+import { executeCommandTask } from './tasks/executeCommandTask.js'
 
 export async function execute({ prompt, ...options }: GptCliArgs) {
   // TODO: help, version

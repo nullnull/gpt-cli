@@ -1,7 +1,7 @@
 import { program } from 'commander'
 import z from 'zod'
-import { execute } from './execute'
-import { logger } from './logger'
+import { execute } from './execute.js'
+import { logger } from './logger.js'
 
 const chatCommandArgs = z.object({
   type: z.literal(`chat`),

@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import { readFile, writeFile } from 'fs/promises'
 
-import { createChatCompletion } from '../createChatCompletion'
+import { createChatCompletion } from '../createChatCompletion.js'
 
 export async function executeReplaceFileTask({
   apiKey,

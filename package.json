@@ -1,4 +1,8 @@
 {
+  "type": "module",
+  "engines": {
+    "node": ">=16"
+  },
   "name": "@nullnull/gpt-cli",
   "publishConfig": {
     "access": "public"

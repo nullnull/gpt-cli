@@ -1,9 +1,9 @@
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 
-import { createChatCompletion } from '../createChatCompletion'
-import { logger } from '../logger'
-import { execCommand } from '../util'
+import { createChatCompletion } from '../createChatCompletion.js'
+import { logger } from '../logger.js'
+import { execCommand } from '../util.js'
 import { z } from 'zod'
 import { json } from 'stream/consumers'
 // import clipboard from 'clipboardy'; // TODO
