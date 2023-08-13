@@ -43,7 +43,12 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
 
   // 単純にプロンプトを返す
   // ファイル、標準入力があればそれも指定する
-  const reply = await executeChatTask({ apiKey, prompt, extraContent: fileBody ?? options.stdin })
+  const reply = await executeChatTask({
+    apiKey,
+    prompt,
+    extraContent: fileBody ?? options.stdin,
+    minimal: options.minimal,
+  })
   console.log(reply)
   process.exit(0)
 }

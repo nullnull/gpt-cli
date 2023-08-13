@@ -9,6 +9,7 @@ const chatCommandArgs = z.object({
   file: z.string().optional(),
   stdin: z.string().optional(),
   write: z.boolean().optional(),
+  minimal: z.boolean().optional(),
 })
 
 const commandCommandArgs = z.object({
@@ -42,6 +43,7 @@ function main({ stdin }: { stdin?: string }) {
 
   program
     .option('-w, --write')
+    .option('-m, --minimal')
     .option('-f, --file <char>')
     .argument('<prompt>', 'prompt')
     .action((prompt, options) => {
