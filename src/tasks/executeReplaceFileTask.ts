@@ -3,6 +3,8 @@ import { readFile, writeFile } from 'fs/promises'
 
 import { createChatCompletion } from '../createChatCompletion.js'
 import { GptCliConfig } from '../config/loadConfig.js'
+import Mustache from 'mustache'
+import { fixedPrompt } from '../prompt/prompt.js'
 
 export async function executeReplaceFileTask({
   apiKey,
@@ -21,18 +23,15 @@ export async function executeReplaceFileTask({
 }) {
   const res = await createChatCompletion(apiKey, config, [
     {
-      // TODO: customize。英語日本語。プログラミング言語の指定。
-      // mustacheでいきたい
-      content: `テキストファイルの中身をこれから行う指示に合わせて書き換えてください。
-出力は書き換えたファイルの中身のみです。それ以外の文字列を含めないでください。
-ファイル名：${filePath}
-指示：${prompt}
-ファイルの中身は次に送ります。
-`,
+      content: Mustache.render(fixedPrompt.ja.replace, { filePath }),
       role: 'user',
     },
     {
-      content: fileBody.toString(),
+      content: prompt,
+      role: 'user',
+    },
+    {
+      content: fileBody,
       role: 'user',
     },
   ])

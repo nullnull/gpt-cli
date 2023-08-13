@@ -1,6 +1,8 @@
 import chalk from 'chalk'
 import { createChatCompletion } from '../createChatCompletion.js'
 import { GptCliConfig } from '../config/loadConfig.js'
+import Mustache from 'mustache'
+import { fixedPrompt } from '../prompt/prompt.js'
 
 export async function executeChatTask({
   apiKey,
@@ -17,18 +19,14 @@ export async function executeChatTask({
   filePath?: string
   minimal?: boolean
 }) {
-  const minimumizeText = minimal ? `指示に含まれる返答以外は絶対にしないでください。余計な解説は不要です。` : ``
   const messages =
     extraContent !== undefined
       ? [
           {
             content:
               filePath === undefined
-                ? `次に送るテキスト文字列について、以下の指示を実行してください。${minimumizeText}
-指示：${prompt}`
-                : `次に送るファイルの中身について、以下の指示を実行してください。${minimumizeText}
-ファイル名：${filePath}
-指示：${prompt}`,
+                ? Mustache.render(fixedPrompt.ja.chatWithStdin, { prompt, minimal })
+                : Mustache.render(fixedPrompt.ja.chatWithFile, { prompt, minimal, filePath }),
             role: 'user' as const,
           },
           {

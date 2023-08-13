@@ -7,7 +7,8 @@ import { execCommand } from '../util.js'
 import { z } from 'zod'
 import clipboard from 'clipboardy'
 import { GptCliConfig } from '../config/loadConfig.js'
-import { config } from 'process'
+import Mustache from 'mustache'
+import { fixedPrompt } from '../prompt/prompt.js'
 
 export async function executeCommandTask({
   apiKey,
@@ -32,43 +33,11 @@ export async function executeCommandTask({
   const messages = [
     explanation
       ? {
-          content: `これから行う指示に合わせて、コマンド生成してください。また、コマンドの解説文を生成してください。
-
-# 出力形式
-1行目にコマンドを、改行を2つ以上あけてから解説文を記述してください。
-今後の全ての指示において、絶対にこの形式で返事をしてください。例外はありません。
-
-# 例
-## 指示の例
-jsファイルを一覧表示してください。
-## 出力例
-find . -name *.js
-
-findコマンドは、UNIXおよびLinuxシステムにおいて、指定したディレクトリからファイルやディレクトリを検索するためのコマンドです。
-様々なオプションと組み合わせて、ファイル名、ファイルタイプ、ファイルサイズ、更新日などの基準で検索が可能です。
--nameオプションは、ファイル名やディレクトリ名に基づいて検索を行うためのオプションです。
-
-# 実行環境
-OS: ${process.platform}
-
-次に指示を送ります。`,
+          content: Mustache.render(fixedPrompt.ja.commandWithExplanation, { platform: process.platform }),
           role: 'user' as const,
         }
       : {
-          content: `これから行う指示に合わせて、コマンド生成してください。
-コマンドのみを出力してください。余計な解説や文章は絶対に含めないでください。
-今後の全ての指示において、絶対にこの形式で返事をしてください。例外はありません。
-
-# 例
-## 指示の例
-jsファイルを一覧表示してください。
-## 出力例
-find . -name *.js
-
-# 実行環境
-OS: ${process.platform}
-
-次に指示を送ります。`,
+          content: Mustache.render(fixedPrompt.ja.commandWithoutExplanation, { platform: process.platform }),
           role: 'user' as const,
         },
     {
@@ -239,10 +208,11 @@ async function executeCommandTaskWithNoInteraction({
 }) {
   const res = await createChatCompletion(apiKey, config, [
     {
-      content: `これから行う指示に合わせて、コマンドを生成してください。
-コマンド以外を返事に含めないでください。
-OS: ${process.platform}
-指示：${prompt}`,
+      content: Mustache.render(fixedPrompt.ja.commandWithoutExplanation, { platform: process.platform }),
+      role: 'user' as const,
+    },
+    {
+      content: prompt,
       role: 'user' as const,
     },
   ])
