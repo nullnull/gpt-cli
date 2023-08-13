@@ -93,7 +93,7 @@ ${parsed.explanation}
   switch (choiceValidated) {
     case 'run': {
       await execCommand(parsed.command)
-      return
+      console.log(`🤖 Executed`)
     }
     case 'copy': {
       // TODO
@@ -112,8 +112,11 @@ ${parsed.explanation}
   const { additionalPrompt } = await inquirer.prompt({
     type: 'input',
     name: 'additionalPrompt',
-    message: `🤖 Please input further instructions`,
+    message: `🤖 Please input further instructions. To finish session, type 'q' or 'quit'`,
   })
+  if (['q', 'quit', ''].includes(additionalPrompt)) {
+    return
+  }
   const parsedPrompt = z.string().parse(additionalPrompt)
   await executeCommandTaskInteractive({
     apiKey,
@@ -141,8 +144,8 @@ function parseJsonReply(json: string) {
     return jsonReplySchema.parse(parsed)
   } catch (e) {
     if (e instanceof Error) {
-      console.log(chalk.red(`failed to parse gpt reply. message: ${json}`))
-      console.log(chalk.red(e.message))
+      console.log(chalk.red(`[ERROR] Failed to parse gpt reply. ${e.message}`))
+      console.log(chalk.red(json))
     }
     process.exit(1)
   }
