@@ -4,11 +4,13 @@ import { executeChatTask } from './tasks/executeChatTask.js'
 import { executeReplaceFileTask } from './tasks/executeReplaceFileTask.js'
 import { openFile } from './util.js'
 import { executeCommandTask } from './tasks/executeCommandTask.js'
+import { loadConfig } from './loadConfig.js'
 
 export async function execute({ prompt, ...options }: GptCliArgs) {
   // TODO: help, version
 
-  const apiKey = process.env.OPENAI_API_KEY // TODO: move to configuration file
+  const config = await loadConfig()
+  const apiKey = config.openaiApiKey
   if (apiKey === undefined) {
     console.log(chalk.red('OPENAI_API_KEY is required'))
     process.exit(1)
