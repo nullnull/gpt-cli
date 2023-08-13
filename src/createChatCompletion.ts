@@ -25,11 +25,10 @@ export async function createChatCompletion(apiKey: string, messages: Array<Messa
 
 const MOCKED_RESPONSE_CONTENT_PREFIX = `[MOCKED] Your prompt is: `
 function generateMockedResponse(messages: Message[]): CreateChatCompletionResponse {
-  const content = messages[0].content.includes(`JSON`)
-    ? JSON.stringify({
-        command: 'find src -name *.ts',
-        explanation: [MOCKED_RESPONSE_CONTENT_PREFIX, `this is explanation`].join(': '),
-      })
+  const content = messages[0].content.includes(`改行を2つ以上`)
+    ? `find src -name *.ts
+
+      this is mocked explanation`
     : messages[0].content.includes(`コマンドを生成`)
     ? 'find src -name *.ts'
     : [MOCKED_RESPONSE_CONTENT_PREFIX, messages.map((x) => x.content).join('\n')].join(': ')
