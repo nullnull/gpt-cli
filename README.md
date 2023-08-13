@@ -20,11 +20,11 @@ To run this CLI tool, you need to have **[Node.js version 16+ ](https://nodejs.o
 ```bash
 # Just chatting
 $ ai "Hello"
-> Hello! How can I assist you today?
+Hello! How can I assist you today?
 
-# Use pipe
+# Piping
 $ echo "Hello" | ai "translate following English to Japanese"
-> こんにちは
+こんにちは
 
 # Read file, convert content, and edit files in-place.
 $ ai --file foo.ts --write "Remove all console.log()"
