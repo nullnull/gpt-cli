@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'fs/promises'
 import yaml from 'js-yaml'
 import { z } from 'zod'
 import { configFilePath, createConfig } from './createConfig.js'
-import { logger } from './logger.js'
+import { logger } from '../logger.js'
 
 const configSchema = z.object({
   openaiApiKey: z.string().optional(),

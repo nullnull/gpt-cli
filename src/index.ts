@@ -2,7 +2,7 @@ import { program } from 'commander'
 import z from 'zod'
 import { execute } from './execute.js'
 import { logger } from './logger.js'
-import { registerApiKey } from './registerApiKey.js'
+import { registerApiKey } from './config/registerApiKey.js'
 
 const chatCommandArgs = z.object({
   type: z.literal(`chat`),

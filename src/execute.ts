@@ -4,7 +4,7 @@ import { executeChatTask } from './tasks/executeChatTask.js'
 import { executeReplaceFileTask } from './tasks/executeReplaceFileTask.js'
 import { openFile } from './util.js'
 import { executeCommandTask } from './tasks/executeCommandTask.js'
-import { loadConfig } from './loadConfig.js'
+import { loadConfig } from './config/loadConfig.js'
 
 export async function execute({ prompt, ...options }: GptCliArgs) {
   // TODO: help, version
