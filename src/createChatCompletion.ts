@@ -5,10 +5,6 @@ import chalk from 'chalk'
 import { Spinner } from 'cli-spinner'
 import { GptCliConfig } from './config/loadConfig.js'
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 type Message = { content: string; role: 'user' | 'assistant' }
 export async function createChatCompletion(apiKey: string, config: GptCliConfig, messages: Array<Message>) {
   logger.debug(messages)
