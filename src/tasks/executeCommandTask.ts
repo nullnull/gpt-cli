@@ -130,16 +130,16 @@ ${parsed.explanation}
       message: `🤖 What will you do next?`,
       choices: [
         {
+          name: '👋 Quit',
+          value: 'quit',
+        },
+        {
           name: '🔁 Input further instructions',
           value: 'continue',
         },
         {
           name: '📋 Copy',
           value: 'copy',
-        },
-        {
-          name: '❌ Cancel',
-          value: 'cancel',
         },
       ],
     })
@@ -149,7 +149,7 @@ ${parsed.explanation}
         // clipboard.writeSync(parsed.command)
         return
       }
-      case 'cancel': {
+      case 'quit': {
         return
       }
     }
