@@ -5,8 +5,7 @@ import { createChatCompletion } from '../createChatCompletion.js'
 import { logger } from '../logger.js'
 import { execCommand } from '../util.js'
 import { z } from 'zod'
-import { json } from 'stream/consumers'
-// import clipboard from 'clipboardy'; // TODO
+import clipboard from 'clipboardy'
 
 export async function executeCommandTask({
   apiKey,
@@ -109,8 +108,7 @@ ${parsed.explanation}
       break
     }
     case 'copy': {
-      // TODO
-      // clipboard.writeSync(parsed.command)
+      clipboard.writeSync(parsed.command)
       return
     }
     case 'cancel': {
@@ -145,8 +143,7 @@ ${parsed.explanation}
     })
     switch (choice2) {
       case 'copy': {
-        // TODO
-        // clipboard.writeSync(parsed.command)
+        clipboard.writeSync(parsed.command)
         return
       }
       case 'quit': {
