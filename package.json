@@ -1,5 +1,6 @@
 {
   "type": "module",
+  "description": "GPT-CLI is a command-line interface tool that allows you to use ChatGPT power from your own CLI! You can combine GPT-CLI and other teraminal commands with standard input-output interface and make your work more efficient.",
   "engines": {
     "node": ">=16"
   },
@@ -7,6 +8,12 @@
   "publishConfig": {
     "access": "public"
   },
+  "keywords": [
+    "ai",
+    "git",
+    "gpt",
+    "chatgpt"
+  ],
   "scripts": {
     "postinstall": "node scripts/createConfig.js",
     "dev": "ts-node src/index.ts",
@@ -24,7 +31,7 @@
     "scripts",
     "bin"
   ],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Katsuma Narisawa",
   "license": "MIT",
   "devDependencies": {
