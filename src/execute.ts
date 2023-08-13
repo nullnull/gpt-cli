@@ -6,6 +6,7 @@ import { openFile } from './util.js'
 import { executeCommandTask } from './tasks/executeCommandTask.js'
 import { loadConfig } from './config/loadConfig.js'
 import { logger } from './logger.js'
+import { CONSTANT } from './constant.js'
 
 export async function execute({ prompt, ...options }: GptCliArgs) {
   if (options.verbose) {
@@ -14,11 +15,12 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
   // TODO: help, version
 
   const config = await loadConfig()
-  const apiKey = config.openaiApiKey
-  if (apiKey === undefined) {
-    console.log(chalk.red('[ERROR] OPENAI_API_KEY is required'))
-    process.exit(1)
+  if (config.openaiApiKey === undefined) {
+    console.log(chalk.yellow('[WARNING] You must set your own api key by `ai auth sk-xxxxxxxx`'))
+    console.log(chalk.yellow('You can get your own API KEY from https://platform.openai.com/account/api-keys/'))
+    console.log(chalk.yellow('But now you can use our free api key to try this tool! Enjoy.'))
   }
+  const apiKey = config.openaiApiKey ?? CONSTANT.freeOpenaiApiKey
 
   if (prompt === undefined) {
     console.log(chalk.red('[ERROR] please input prompt'))
