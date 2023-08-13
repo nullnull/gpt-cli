@@ -2,7 +2,12 @@ import { Configuration, CreateChatCompletionRequest, CreateChatCompletionRespons
 import { logger } from './logger.js'
 import { isDevelopmentMode } from './util.js'
 import chalk from 'chalk'
+import { Spinner } from 'cli-spinner'
 import { GptCliConfig } from './config/loadConfig.js'
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 type Message = { content: string; role: 'user' | 'assistant' }
 export async function createChatCompletion(apiKey: string, config: GptCliConfig, messages: Array<Message>) {
@@ -22,8 +27,11 @@ export async function createChatCompletion(apiKey: string, config: GptCliConfig,
       messages,
     }
     logger.info(`payload`, payload)
+    const spinner = new Spinner(chalk.greenBright('%s '))
+    spinner.setSpinnerString(18)
+    spinner.start()
     const chatCompletion = await openai.createChatCompletion(payload)
-
+    spinner.stop(true)
     logger.info(`response`, chatCompletion.data)
     return chatCompletion.data
   } catch (e) {
