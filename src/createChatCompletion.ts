@@ -23,7 +23,10 @@ export async function createChatCompletion(apiKey: string, config: GptCliConfig,
       messages,
     }
     logger.info(`payload`, payload)
-    const spinner = new Spinner(chalk.greenBright('%s '))
+    const spinner = new Spinner({
+      text: chalk.greenBright('%s '),
+      stream: process.stderr,
+    })
     spinner.setSpinnerString(18)
     spinner.start()
     const chatCompletion = await openai.createChatCompletion(payload)
