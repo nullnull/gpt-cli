@@ -15,11 +15,10 @@ export async function execute({ prompt, ...options }: GptCliArgs) {
 
   const config = await loadConfig()
   if (config.openaiApiKey === undefined) {
+    console.log(chalk.yellow('[ERROR] You must set your own API KEY. Please run `ai auth sk-xxxxxxxx`'))
+    console.log(chalk.yellow('You can get your own API KEY from https://platform.openai.com/account/api-keys/'))
     // TODO
-    // console.log(chalk.yellow('[WARNING] You must set your own api key. Please run `ai auth sk-xxxxxxxx`'))
-    // console.log(chalk.yellow('You can get your own API KEY from https://platform.openai.com/account/api-keys/'))
     // console.log(chalk.yellow('...But now, you can use our free api key to try this tool. Enjoy! ✨'))
-    console.log(chalk.red('[ERROR] OPENAI_API_KEY is required'))
     process.exit(1)
   }
   const apiKey = config.openaiApiKey
