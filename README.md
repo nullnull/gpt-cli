@@ -1,4 +1,7 @@
 # GPT-CLI
+
+https://github.com/nullnull/gpt-cli/assets/1388551/f2b18c24-410c-47d9-b456-2e91206da000
+
 GPT-CLI is a command-line interface tool that allows you to use ChatGPT power from your own CLI!
 
 You can combine GPT-CLI and other teraminal commands with standard input-output interface and make your work more efficient.
